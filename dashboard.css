@@ -1,0 +1,29 @@
+:root { color-scheme: light dark; --bg:#f6f7f9; --card:#fff; --fg:#14171a; --muted:#657786; --line:#e1e8ed; --accent:#1d9bf0; --danger:#e0245e; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0f1419; --card:#16202a; --fg:#e7e9ea; --muted:#8b98a5; --line:#2f3b47; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, sans-serif; }
+main { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+h1 { margin: 0 0 16px; font-size: 24px; }
+h2 { margin: 0 0 8px; font-size: 17px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+.banner { padding:10px 14px; border-radius:10px; margin-bottom:16px; }
+.banner.ok { background:#12372a; color:#8be0b3; }
+.banner.warn { background:#4a3a10; color:#ffd77a; }
+.banner.bad { background:#4a1a24; color:#ffb3c4; }
+textarea { width:100%; font:13px/1.4 ui-monospace, monospace; padding:10px; border-radius:8px; border:1px solid var(--line); background:transparent; color:inherit; resize:vertical; }
+input[type=search], input[type=number], select { padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:transparent; color:inherit; }
+input[type=number] { width: 80px; }
+.row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:10px; }
+button { padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:var(--accent); color:#fff; font-weight:600; cursor:pointer; }
+button.danger { background:var(--danger); }
+button.ghost { background:transparent; color:var(--fg); }
+button:disabled { opacity:.5; cursor:not-allowed; }
+.muted { color:var(--muted); } .small { font-size:13px; }
+progress { width:100%; height:14px; }
+.tablewrap { max-height:480px; overflow:auto; margin-top:12px; border:1px solid var(--line); border-radius:8px; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th, td { text-align:left; padding:6px 10px; border-bottom:1px solid var(--line); }
+th { position:sticky; top:0; background:var(--card); }
+a { color:var(--accent); text-decoration:none; }
+.st-blocked { color:var(--danger); } .st-unblocked { color:#17bf63; } .st-failed, .st-notfound { color:#ffad1f; }
+code { background:rgba(127,127,127,.2); padding:1px 5px; border-radius:4px; }
