@@ -2,7 +2,34 @@
 // Uses the list currently selected in the extension popup.
 (() => {
   const BTN_ID = 'xblm-add-btn';
+  const STYLE_ID = 'xblm-style';
   let timer = null;
+
+  // Fixed accent colours that read well on both X's light and dark themes.
+  const CSS = `
+    #${BTN_ID} {
+      display: inline-flex; align-items: center; justify-content: center;
+      box-sizing: border-box; padding: 0 16px; margin-right: 8px;
+      border: 1px solid transparent; border-radius: 9999px;
+      font: 700 14px/1 -apple-system, "Segoe UI", Roboto, sans-serif;
+      white-space: nowrap; cursor: pointer; transition: filter .15s;
+    }
+    #${BTN_ID}[data-state="add"] { background: #1d9bf0; border-color: #1d9bf0; color: #fff; }
+    #${BTN_ID}[data-state="add"]:hover { filter: brightness(1.12); }
+    #${BTN_ID}[data-state="added"] { background: transparent; border-color: #00ba7c; color: #00ba7c; cursor: default; }
+    #${BTN_ID}[data-state="none"] {
+      background: transparent; cursor: default; opacity: .6;
+      color: var(--xblm-fg, currentColor); border-color: var(--xblm-fg, currentColor);
+    }
+  `;
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    const s = document.createElement('style');
+    s.id = STYLE_ID;
+    s.textContent = CSS;
+    document.head.appendChild(s);
+  }
 
   function findAnchor() {
     // The "..." button of someone else's profile.
@@ -23,31 +50,22 @@
     return { parent: anchor.parentElement, before: anchor };
   }
 
-  function applyStyle(btn, ref) {
-    Object.assign(btn.style, {
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      boxSizing: 'border-box',
-      height: '36px',
-      padding: '0 16px',
-      marginRight: '8px',
-      borderRadius: '9999px',
-      border: '1px solid rgba(128,128,128,0.6)',
-      background: 'transparent',
-      color: getComputedStyle(ref).color,
-      font: '700 14px/1 -apple-system, "Segoe UI", sans-serif',
-      whiteSpace: 'nowrap',
-      cursor: 'pointer'
-    });
+  // Match X's own buttons: same height, same vertical margins, same alignment.
+  function matchLayout(btn, anchor, before) {
+    const h = Math.round(anchor.getBoundingClientRect().height) || 36;
+    const cs = getComputedStyle(before);
+    btn.style.height = h + 'px';
+    btn.style.marginTop = cs.marginTop;
+    btn.style.marginBottom = cs.marginBottom;
+    btn.style.alignSelf = cs.alignSelf !== 'auto' ? cs.alignSelf : 'center';
+    btn.style.setProperty('--xblm-fg', getComputedStyle(anchor).color);
   }
 
-  function setLabel(btn, text, disabled, title) {
+  function setState(btn, state, text, disabled, title) {
     if (btn.textContent !== text) btn.textContent = text; // avoid useless DOM mutations
+    btn.dataset.state = state;
     btn.disabled = disabled;
     btn.title = title;
-    btn.style.opacity = disabled ? '0.6' : '1';
-    btn.style.cursor = disabled ? 'default' : 'pointer';
   }
 
   function short(name) {
@@ -61,6 +79,7 @@
 
     if (!handle || !anchor) { if (btn) btn.remove(); return; }
 
+    ensureStyle();
     const { parent, before } = placement(anchor);
     if (!btn) {
       btn = document.createElement('button');
@@ -71,16 +90,16 @@
     if (btn.parentElement !== parent || btn.nextElementSibling !== before) {
       parent.insertBefore(btn, before);
     }
-    applyStyle(btn, anchor);
+    matchLayout(btn, anchor, before);
     btn.dataset.handle = handle;
 
     const st = await XBLM.load();
     if (!st.active) {
-      setLabel(btn, 'No list', true, 'Create a list from the extension popup first');
+      setState(btn, 'none', 'No list', true, 'Create a list from the extension popup first');
     } else if (st.lists[st.active].includes(handle)) {
-      setLabel(btn, '\u2713 In ' + short(st.active), true, '@' + handle + ' is already in "' + st.active + '"');
+      setState(btn, 'added', '\u2713 In ' + short(st.active), true, '@' + handle + ' is already in "' + st.active + '"');
     } else {
-      setLabel(btn, '+ ' + short(st.active), false, 'Add @' + handle + ' to "' + st.active + '"');
+      setState(btn, 'add', '+ ' + short(st.active), false, 'Add @' + handle + ' to "' + st.active + '"');
     }
   }
 
