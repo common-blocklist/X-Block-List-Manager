@@ -114,6 +114,7 @@ The code is shared between browsers; only the manifest differs.
 src/                 shared extension code
 manifests/           firefox.json (Manifest V2) and chrome.json (Manifest V3)
 build.sh             assembles dist/firefox and dist/chrome, plus zips
+build.ps1            assembles dist/firefox and dist/chrome, plus zips
 ```
 
 ```bash
@@ -123,6 +124,14 @@ build.sh             assembles dist/firefox and dist/chrome, plus zips
 # dist/x-blocklist-chrome.zip
 # dist/x-blocklist-firefox.zip
 ```
+```powsershell
+.\build.ps1
+# dist\chrome\                      -> load unpacked in Chromium browsers
+# dist\firefox\                     -> load as temporary add-on in Firefox
+# dist\x-blocklist-chrome.zip
+# dist\x-blocklist-firefox.zip
+```
+
 
 The Chromium build has been tested end to end in Chromium with a mocked x.com (block, not-found handling, rate-limit retry, history persistence, mass unblock and CSV export). The Firefox build is the same code with an MV2 manifest, and has been syntax-checked but not run in a browser by the authors, so please report issues.
 
