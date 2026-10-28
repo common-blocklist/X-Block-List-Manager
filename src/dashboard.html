@@ -14,13 +14,18 @@
 
   <section class="card">
     <h2>1. Add a list</h2>
-    <p class="muted">Paste handles (one per line, comma-separated, <code>@handle</code> or profile URLs all work), or load a CSV/TXT file.
+    <p class="muted">Paste handles (one per line, comma-separated, <code>@handle</code> or profile URLs all work), load a CSV/TXT file, or load a shared list from a URL (GitHub, GitLab, Codeberg raw files).
       For CSVs with a header, a column named <code>handle</code>, <code>username</code> or <code>screen_name</code> is used; otherwise the first column.</p>
     <textarea id="input" rows="9" placeholder="@example1&#10;example2&#10;https://x.com/example3"></textarea>
     <div class="row">
       <input type="file" id="file" accept=".csv,.txt,.tsv,text/plain,text/csv">
       <span id="parsed" class="muted"></span>
     </div>
+    <div class="row">
+      <input type="url" id="listUrl" placeholder="https://raw.githubusercontent.com/owner/repo/main/list.txt">
+      <button id="btnLoadUrl">Load from URL</button>
+    </div>
+    <div id="urlInfo" class="muted small"></div>
     <div class="row">
       <label>Delay between actions (seconds)
         <input type="number" id="delay" min="0.5" step="0.5" value="2">

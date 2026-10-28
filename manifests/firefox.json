@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "X Block List Manager",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Mass block / unblock X.com accounts from a list, build your own lists from profile pages, and keep a log of who you blocked.",
   "browser_specific_settings": {
     "gecko": {
@@ -17,7 +17,11 @@
   "permissions": [
     "storage",
     "https://x.com/*",
-    "https://twitter.com/*"
+    "https://twitter.com/*",
+    "https://raw.githubusercontent.com/*",
+    "https://gist.githubusercontent.com/*",
+    "https://gitlab.com/*",
+    "https://codeberg.org/*"
   ],
   "browser_action": {
     "default_title": "X Block List Manager",

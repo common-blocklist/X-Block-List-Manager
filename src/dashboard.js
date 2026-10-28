@@ -8,9 +8,10 @@ let pendingHandles = [];
 
 /* ---------- storage ---------- */
 async function load() {
-  const d = await api.storage.local.get(["records", "delay"]);
+  const d = await api.storage.local.get(["records", "delay", "lastListUrl"]);
   records = d.records || {};
   if (d.delay) $("delay").value = d.delay;
+  if (d.lastListUrl) $("listUrl").value = d.lastListUrl;
 }
 const save = () => api.storage.local.set({ records });
 
@@ -37,7 +38,7 @@ function cleanHandle(raw) {
 }
 
 function parseHandles(text) {
-  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
   if (!lines.length) return { handles: [], invalid: 0 };
   let col = 0, start = 0;
   const first = splitCells(lines[0]).map((c) => c.toLowerCase());
@@ -81,6 +82,72 @@ $("file").addEventListener("change", async (e) => {
   $("input").value = await f.text();
   refreshParsed();
 });
+
+/* ---------- load a shared list from a URL ---------- */
+// Only raw-file hosts are allowed (they are also the only extra host permissions), so a list is
+// always a plain public text file that anyone can read and audit before blocking.
+const LIST_HOSTS = ["raw.githubusercontent.com", "gist.githubusercontent.com", "gitlab.com", "codeberg.org"];
+const MAX_LIST_BYTES = 2 * 1024 * 1024;
+
+// github.com/<o>/<r>/blob/<ref>/<path> -> raw.githubusercontent.com/<o>/<r>/<ref>/<path>
+function toRawUrl(input) {
+  let u;
+  try { u = new URL(input.trim()); } catch (_) { return null; }
+  if (u.protocol !== "https:") return null;
+  if (u.hostname === "github.com") {
+    const m = u.pathname.match(/^\/([^/]+)\/([^/]+)\/blob\/(.+)$/);
+    if (!m) return null;
+    u = new URL(`https://raw.githubusercontent.com/${m[1]}/${m[2]}/${m[3]}`);
+  }
+  if (!LIST_HOSTS.includes(u.hostname)) return null;
+  return u.toString();
+}
+
+// Leading "# key: value" lines describe the list (name, updated, criteria, removal…).
+function listHeader(text) {
+  const out = [];
+  for (const line of text.split(/\r?\n/)) {
+    const t = line.trim();
+    if (!t) continue;
+    if (!t.startsWith("#")) break;
+    out.push(t.replace(/^#+\s?/, ""));
+    if (out.length >= 8) break;
+  }
+  return out;
+}
+
+async function loadFromUrl() {
+  const raw = toRawUrl($("listUrl").value);
+  const info = $("urlInfo");
+  if (!raw) {
+    info.textContent = `Unsupported URL. Use an https link to a raw text file on: ${LIST_HOSTS.join(", ")} (github.com/…/blob/… links are converted).`;
+    return;
+  }
+  $("btnLoadUrl").disabled = true;
+  info.textContent = "Loading…";
+  try {
+    const res = await fetch(raw, { credentials: "omit", cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const len = Number(res.headers.get("content-length"));
+    if (len && len > MAX_LIST_BYTES) throw new Error("file too large");
+    const text = await res.text();
+    if (text.length > MAX_LIST_BYTES) throw new Error("file too large");
+    if (/^\s*</.test(text)) throw new Error("this is a web page, not a raw text file");
+    $("input").value = text;
+    refreshParsed();
+    await api.storage.local.set({ lastListUrl: $("listUrl").value.trim() });
+    const header = listHeader(text);
+    info.textContent = `Loaded from ${new URL(raw).hostname}. Review the list below before blocking.` +
+      (header.length ? "\n" + header.join("\n") : "");
+  } catch (e) {
+    info.textContent = `Could not load the list: ${e.message}.`;
+  } finally {
+    $("btnLoadUrl").disabled = running;
+  }
+}
+
+$("btnLoadUrl").addEventListener("click", loadFromUrl);
+$("listUrl").addEventListener("keydown", (e) => { if (e.key === "Enter") loadFromUrl(); });
 
 /* ---------- connection to x.com tab ---------- */
 async function findXTab() {
@@ -213,7 +280,7 @@ async function runQueue(action, handles) {
 }
 
 function setBusy(b) {
-  ["btnBlock", "btnUnblockList", "btnUnblockSel", "btnUnblockAll", "btnClear"].forEach((id) => ($(id).disabled = b));
+  ["btnBlock", "btnUnblockList", "btnUnblockSel", "btnUnblockAll", "btnClear", "btnLoadUrl"].forEach((id) => ($(id).disabled = b));
   $("btnStop").disabled = !b;
 }
 

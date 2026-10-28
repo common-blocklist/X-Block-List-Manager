@@ -11,7 +11,7 @@ h2 { margin: 0 0 8px; font-size: 17px; }
 .banner.warn { background:#4a3a10; color:#ffd77a; }
 .banner.bad { background:#4a1a24; color:#ffb3c4; }
 textarea { width:100%; font:13px/1.4 ui-monospace, monospace; padding:10px; border-radius:8px; border:1px solid var(--line); background:transparent; color:inherit; resize:vertical; }
-input[type=search], input[type=number], select { padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:transparent; color:inherit; }
+input[type=search], input[type=number], input[type=url], select { padding:7px 9px; border-radius:8px; border:1px solid var(--line); background:transparent; color:inherit; }
 input[type=number] { width: 80px; }
 .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:10px; }
 button { padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:var(--accent); color:#fff; font-weight:600; cursor:pointer; }
@@ -27,3 +27,5 @@ th { position:sticky; top:0; background:var(--card); }
 a { color:var(--accent); text-decoration:none; }
 .st-blocked { color:var(--danger); } .st-unblocked { color:#17bf63; } .st-failed, .st-notfound { color:#ffad1f; }
 code { background:rgba(127,127,127,.2); padding:1px 5px; border-radius:4px; }
+input[type=url] { flex:1; min-width:260px; }
+#urlInfo { margin-top:6px; white-space:pre-line; }
