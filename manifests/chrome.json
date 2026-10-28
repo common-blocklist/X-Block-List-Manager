@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "X Block List Manager",
+  "version": "1.1.0",
+  "description": "Mass block / unblock X.com accounts from a pasted or uploaded list, and keep a log of who you blocked.",
+  "minimum_chrome_version": "102",
+  "permissions": ["storage"],
+  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "X Block List Manager" },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
