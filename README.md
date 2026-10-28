@@ -139,4 +139,4 @@ This project is not affiliated with or endorsed by X Corp.
 
 ## License
 
-Add a license of your choice (for example MIT) before publishing.
+GNU General Public Licence v3.0 only
