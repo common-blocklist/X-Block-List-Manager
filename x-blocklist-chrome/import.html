@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Import lists - X Block List Manager</title>
+  <style>
+    body { max-width: 520px; margin: 48px auto; padding: 0 16px; font: 15px/1.5 system-ui, sans-serif; background: #1e2327; color: #e8ecef; }
+    h1 { font-size: 20px; }
+    p { color: #98a3ae; }
+    input[type="file"] { margin: 12px 0; color: inherit; }
+    #result { white-space: pre-line; color: #e8ecef; }
+  </style>
+</head>
+<body>
+  <h1>Import lists</h1>
+  <p>Choose one or more .txt files with one handle, @handle or profile URL per line. Each file becomes a list named after the file. If a list with that name already exists, the new accounts are merged into it.</p>
+  <input id="file" type="file" accept=".txt,text/plain" multiple>
+  <p id="result" role="status"></p>
+  <script src="lists-common.js"></script>
+  <script src="import.js"></script>
+</body>
+</html>

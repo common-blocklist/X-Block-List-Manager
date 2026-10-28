@@ -12,6 +12,8 @@ A browser extension for **Firefox** and **Chromium-based browsers** (Chrome, Edg
 - **Block history**: a searchable, filterable table of every account processed, with status, timestamp and error notes. Export it to CSV at any time.
 - **Rate-limit handling**: randomized delays between actions, and automatic pause and resume when X returns a rate-limit response.
 - **Safe stops**: stops on account-lock or automation warnings, and you can stop manually at any time.
+- **Build your own lists**: a button on every profile page (next to the "..." menu) adds that account to the list selected in the toolbar popup. Create, switch and delete lists, review their accounts, and export or import them as `.txt`.
+- **Review before blocking**: "Block this list" in the popup sends the list to the dashboard and pre-fills the box. Nothing is blocked until you click **Block these accounts** there.
 
 ## Installation
 
@@ -45,12 +47,21 @@ Temporary add-ons are removed when Firefox restarts.
 ## Usage
 
 1. Open [x.com](https://x.com) in your browser and log in.
-2. Click the **X Block List Manager** toolbar button to open the dashboard.
+2. Click the **X Block List Manager** toolbar button to open the popup, then **Dashboard**.
 3. Check that the banner at the top says it is connected to your logged-in x.com tab. If it can't reach the tab, reload your x.com tab once.
 4. Paste your list into the text box, or choose a file. The number of detected handles is shown below the box.
 5. Optionally adjust the **delay between actions** (default 2 seconds).
 6. Click **Block these accounts** and confirm.
 7. Keep the dashboard tab and an x.com tab open until the run finishes. The dashboard keeps its pace when it is in a background tab, but don't close either tab.
+
+### Building lists from profile pages
+
+1. Click the toolbar button, then **New list** and give it a name. It becomes the active list.
+2. Browse to any profile on x.com. A **+ list name** button appears left of the "..." button. Click it to add that account (it changes to **In list name**).
+3. In the popup you can switch lists, **Show accounts**, remove entries with the **x** buttons, **Export .txt**, **Import .txt**, or **Delete list**.
+4. **Block this list** opens the dashboard with the list pre-filled so you can review it and start the run.
+
+Imported `.txt` files must have one handle, `@handle` or profile URL per line. A file named `friends.txt` becomes (or merges into) a list called `friends`. Entries that aren't a valid handle are skipped and reported, never guessed.
 
 ### Reviewing and undoing
 
@@ -81,13 +92,16 @@ example2,bots
 
 ## How it works
 
-The extension has three parts that run in the same way in both browsers:
+The extension runs the same way in both browsers:
 
 | File | Role |
 | --- | --- |
 | `dashboard.html` / `dashboard.js` / `dashboard.css` | The user interface: parsing, queue runner, history table, import/export. |
 | `content.js` | Injected into x.com tabs. Sends the block/unblock requests from inside the page. |
-| `background.js` | Opens the dashboard when the toolbar button is clicked (MV2 background script in Firefox, MV3 service worker in Chromium). |
+| `popup.html` / `popup.js` / `popup.css` | The toolbar popup: manage lists, add the current profile, export, open the dashboard. |
+| `import.html` / `import.js` | Imports `.txt` files as lists. |
+| `lists-common.js` | Shared list storage and handle parsing; also picks `browser` (Firefox) or `chrome` (Chromium). |
+| `profile-button.js` | Injected into x.com profile pages; adds the "add to list" button. |
 | `timer-worker.js` | Keeps the delay timers accurate when the dashboard tab is in the background. |
 
 Flow:
@@ -124,7 +138,7 @@ build.ps1            assembles dist/firefox and dist/chrome, plus zips
 # dist/x-blocklist-chrome.zip
 # dist/x-blocklist-firefox.zip
 ```
-```powsershell
+```powershell
 .\build.ps1
 # dist\chrome\                      -> load unpacked in Chromium browsers
 # dist\firefox\                     -> load as temporary add-on in Firefox
@@ -133,7 +147,11 @@ build.ps1            assembles dist/firefox and dist/chrome, plus zips
 ```
 
 
-The Chromium build has been tested end to end in Chromium with a mocked x.com (block, not-found handling, rate-limit retry, history persistence, mass unblock and CSV export). The Firefox build is the same code with an MV2 manifest, and has been syntax-checked but not run in a browser by the authors, so please report issues.
+The Chromium build has been tested end to end in Chromium with a mocked x.com (block, not-found handling, rate-limit retry, history persistence, mass unblock, CSV export, `.txt` import, the profile-page button, and the popup-to-dashboard handoff). The Firefox build is the same code with an MV2 manifest, and has been syntax-checked but not run in a browser by the authors, so please report issues.
+
+## Credits
+
+The popup, custom lists, `.txt` import/export and the profile-page button were contributed by [@yacker05](https://github.com/yacker05).
 
 ## Limitations and disclaimer
 
