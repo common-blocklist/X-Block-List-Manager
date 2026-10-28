@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>X Block List Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>Block lists</h1>
+    <button id="dashboardBtn" class="link" title="Open the full dashboard">Dashboard</button>
+  </header>
+
+  <section id="listRow">
+    <select id="listSelect" aria-label="Active list"></select>
+    <button id="newBtn">New list</button>
+  </section>
+
+  <section id="newRow" hidden>
+    <input id="newName" type="text" maxlength="60" placeholder="List name" aria-label="New list name">
+    <button id="createBtn" class="primary">Create</button>
+    <button id="cancelBtn" class="link">Cancel</button>
+  </section>
+
+  <p id="empty" hidden>No list yet. Create one to start collecting accounts.</p>
+
+  <section id="listPanel" hidden>
+    <div id="current"></div>
+    <button id="addBtn" class="primary wide">Add account to list</button>
+
+    <div class="countRow">
+      <span id="count"></span>
+      <button id="toggleBtn" class="link">Show accounts</button>
+    </div>
+    <ul id="items" hidden></ul>
+
+    <button id="blockBtn" class="danger wide">Block this list</button>
+
+  </section>
+
+  <section class="row" id="fileRow">
+    <button id="exportBtn">Export .txt</button>
+    <button id="importBtn">Import .txt</button>
+    <button id="deleteBtn" class="link">Delete list</button>
+  </section>
+
+  <p id="status" role="status"></p>
+
+  <script src="lists-common.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

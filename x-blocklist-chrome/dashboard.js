@@ -295,6 +295,18 @@ $("btnExport").addEventListener("click", () => {
   setBusy(false);
   render();
   refreshParsed();
+  await loadPendingList();
   checkConnection();
   setInterval(() => { if (!running) checkConnection(); }, 10000);
 })();
+
+// The popup's "Block this list" button hands a list over through storage. We only pre-fill the
+// box: nothing is blocked until you review it and click "Block these accounts".
+async function loadPendingList() {
+  const { pendingBlockList } = await api.storage.local.get("pendingBlockList");
+  if (!pendingBlockList || !pendingBlockList.length) return;
+  $("input").value = pendingBlockList.join("\n");
+  refreshParsed();
+  await api.storage.local.remove("pendingBlockList");
+  $("input").scrollIntoView({ block: "center" });
+}
