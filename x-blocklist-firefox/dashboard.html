@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>X Block List Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<main>
+  <h1>X Block List Manager</h1>
+
+  <div id="conn" class="banner warn">Checking connection to x.com…</div>
+
+  <section class="card">
+    <h2>1. Add a list</h2>
+    <p class="muted">Paste handles (one per line, comma-separated, <code>@handle</code> or profile URLs all work), or load a CSV/TXT file.
+      For CSVs with a header, a column named <code>handle</code>, <code>username</code> or <code>screen_name</code> is used; otherwise the first column.</p>
+    <textarea id="input" rows="9" placeholder="@example1&#10;example2&#10;https://x.com/example3"></textarea>
+    <div class="row">
+      <input type="file" id="file" accept=".csv,.txt,.tsv,text/plain,text/csv">
+      <span id="parsed" class="muted"></span>
+    </div>
+    <div class="row">
+      <label>Delay between actions (seconds)
+        <input type="number" id="delay" min="0.5" step="0.5" value="2">
+      </label>
+      <button id="btnBlock" class="danger">Block these accounts</button>
+      <button id="btnUnblockList">Unblock these accounts</button>
+    </div>
+  </section>
+
+  <section class="card" id="runCard" hidden>
+    <h2>Progress</h2>
+    <progress id="bar" value="0" max="1"></progress>
+    <div id="runText" class="muted"></div>
+    <div class="row">
+      <button id="btnStop">Stop</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. History — who was blocked</h2>
+    <div class="row">
+      <input type="search" id="search" placeholder="Search handle…">
+      <select id="filter">
+        <option value="all">All</option>
+        <option value="blocked" selected>Currently blocked (by this tool)</option>
+        <option value="unblocked">Unblocked</option>
+        <option value="notfound">Not found / suspended</option>
+        <option value="failed">Failed</option>
+      </select>
+      <span id="counts" class="muted"></span>
+    </div>
+    <div class="row">
+      <button id="btnUnblockSel">Unblock selected</button>
+      <button id="btnUnblockAll">Unblock everyone I blocked</button>
+      <button id="btnExport">Export CSV</button>
+      <button id="btnClear" class="ghost">Clear history</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th><input type="checkbox" id="selAll"></th>
+          <th>Handle</th><th>Status</th><th>When</th><th>Note</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="muted small">Tip: X rate-limits block actions. The tool slows down and waits automatically. Very large lists can take hours; keep this tab and an x.com tab open.
+    Automating actions may go against X's terms, so use it on your own account at your own risk.</p>
+</main>
+<script src="dashboard.js"></script>
+</body>
+</html>
