@@ -277,3 +277,11 @@ $("btnExport").addEventListener("click", () => {
   checkConnection();
   setInterval(() => { if (!running) checkConnection(); }, 10000);
 })();
+
+browser.storage.local.get('pendingBlockList').then(({ pendingBlockList }) => {
+  if (!pendingBlockList || !pendingBlockList.length) return;
+  const box = document.querySelector('textarea'); // à adapter si le dashboard en a plusieurs
+  box.value = pendingBlockList.join('\n');
+  box.dispatchEvent(new Event('input', { bubbles: true }));
+  browser.storage.local.remove('pendingBlockList');
+});
