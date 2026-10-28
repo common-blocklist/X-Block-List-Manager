@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "X Block List Manager",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Mass block / unblock X.com accounts from a pasted or uploaded list, build and share your own lists, and keep a log of who you blocked.",
   "browser_specific_settings": {
     "gecko": { "id": "x-blocklist-manager@local", "strict_min_version": "91.0" }
@@ -16,6 +16,11 @@
     {
       "matches": ["https://x.com/*", "https://twitter.com/*"],
       "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "js": ["lists-common.js", "profile-button.js"],
       "run_at": "document_idle"
     }
   ]
