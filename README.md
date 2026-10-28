@@ -19,9 +19,8 @@ Download the build for your browser from the [Releases](../../releases) page, or
 
 | File | Use |
 | --- | --- |
-| `x-blocklist-chrome.zip` | Unzip and load unpacked in Chrome/Chromium browsers, or upload to the Chrome Web Store. |
-| `x-blocklist-chrome.crx` | Packed Chromium extension. Recent Chrome on Windows and macOS only installs `.crx` files from the Web Store or via enterprise policy, so the zip is the easiest route. |
-| `x-blocklist-firefox.xpi` | Firefox package. Unsigned until signed by addons.mozilla.org; release Firefox will only install the signed version. |
+| `x-blocklist-chrome.zip` | Unzip and load unpacked in Chrome/Chromium browsers |
+| `x-blocklist-firefox.zip` | Unzip and load unpacked in Firefox. |
 
 ### Chrome, Edge, Brave, Opera, Vivaldi
 
@@ -42,13 +41,6 @@ Chrome may show a "disable developer mode extensions" prompt on startup for unpa
 3. Select `x-blocklist-firefox.zip`, or the `manifest.json` inside the unzipped `firefox` build folder.
 
 Temporary add-ons are removed when Firefox restarts.
-
-**Permanent install**
-
-Firefox requires extensions to be signed. Either:
-
-- Submit the extension to [addons.mozilla.org](https://addons.mozilla.org/developers/) using the free **unlisted** option to get a signed `.xpi`, or
-- Use Firefox Developer Edition or Nightly and set `xpinstall.signatures.required` to `false` in `about:config`.
 
 ## Usage
 
