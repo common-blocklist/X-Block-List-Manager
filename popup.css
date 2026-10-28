@@ -9,6 +9,7 @@
   }
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   width: 320px; margin: 0; padding: 12px;
   background: var(--bg); color: var(--fg);

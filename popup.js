@@ -14,7 +14,10 @@ function render() {
 
   $('empty').hidden = hasLists;
   $('listPanel').hidden = !hasLists;
-  $('listRow').hidden = !hasLists;
+  $('listSelect').hidden = !hasLists;
+  $('exportBtn').hidden = !hasLists;
+  $('deleteBtn').hidden = !hasLists;
+  $('cancelBtn').hidden = !hasLists;
   if (!hasLists && $('newRow').hidden) { $('newRow').hidden = false; $('newName').focus(); }
 
   const sel = $('listSelect');
